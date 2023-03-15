@@ -42,7 +42,7 @@ function App() {
         from: accounts[0],
         gas: 1000000,
       });
-      console.log(res);
+      console.log("Creation Output ",res);
       alert("Send " + itemPrice + " Wei to buy " + itemIdentifier + " at address " + res.events.SupplyChainStep.returnValues._address);
     } catch (error) {
       console.log("Error => ", error);
