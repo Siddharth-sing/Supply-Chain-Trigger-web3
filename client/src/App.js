@@ -13,6 +13,7 @@ function App() {
 
   const [itemPrice, setIP] = useState(0);
   const [itemIdentifier, setItemIdentifier] = useState("Item");
+  const [itemIndex, setItemIndex] = useState(-1);
 
   useEffect(() => {
     console.log("Inside useEffect");
@@ -29,9 +30,9 @@ function App() {
   }, []);
 
   useEffect(() => {
-   listenToThePayment();
+    listenToThePayment();
   });
-  
+
   const CreateItem = async () => {
     console.log("Creating item wait !....");
     try {
@@ -49,10 +50,25 @@ function App() {
 
   }
 
+  const TriggerDelivery = async () => {
+    try {
+      const gas = await itemManagerContract.methods.createItem(itemIdentifier, itemPrice).estimateGas();
+      console.log(gas);
+      let x = await itemManagerContract.methods.triggerDelivery(itemIndex).send({
+        from: accounts[0],
+        gas: 1000000,
+      });
+      console.log("Delivery Output",x);
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
+
   const listenToThePayment = () => {
     itemManagerContract?.events.SupplyChainStep().on("data", async function (evt) {
       let itemObj = await itemManagerContract.methods.items(evt.returnValues._itemIndex).call();
-      console.log("Payment Status =>", itemObj._step);
+      console.log("ItemIndex = " + evt.returnValues._itemIndex + " ItemIdentifier = " + itemObj._identifier + " Item Status = " + evt.returnValues._step);
     });
   }
   return (
@@ -82,6 +98,15 @@ function App() {
           Save Item
         </button>
 
+        <input
+          placeholder="Item Index of item to be delivered"
+          className="inputx"
+          type="number"
+          onChange={(t) => setItemIndex(t.target.value)}
+        />
+        <button className="buttonx" onClick={TriggerDelivery}>
+          Deliver The Product
+        </button>
         <br />
       </div>
     </div>

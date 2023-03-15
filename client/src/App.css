@@ -28,3 +28,16 @@
 	height: 5vh;
 	background-color: #45a0eb;
 }
+
+.buttonx {
+	width: 40vw;
+	height: 8vh;
+	margin-top: 5px;
+	background-color: #f54058;
+	
+}
+.inputx{
+	margin-top: 25px;
+	width: 40vw;
+	height: 8vh;
+}
